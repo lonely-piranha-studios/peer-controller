@@ -47,7 +47,6 @@ export default class GamePad {
     while (this._actionBuffer.size()) {
       const { type, value, name } = this._actionBuffer.deq() || {}
       const fname = String(name).toLowerCase()
-      console.log(fname)
 
       if (fname) {
         const action = state[fname] = state[fname] || {}
