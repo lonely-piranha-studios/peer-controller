@@ -3,13 +3,13 @@ import { System } from 'yagl-ecs'
 
 export default class MapSystem extends System {
 
-  constructor (container) {
+  constructor (renderer) {
     super()
-    this.container = container
-    this.mapGraphic = this.container.createGraphics()
-    this.container.addGraphics(this.mapGraphic)
-    this.highlight = this.container.createGraphics()
-    this.container.addGraphics(this.highlight)
+    this.renderer = renderer
+    this.mapGraphic = new this.renderer.Graphics()
+    this.renderer.stage.addChild(this.mapGraphic)
+    this.highlight = new this.renderer.Graphics()
+    this.renderer.stage.addChild(this.highlight)
   }
 
   test (entity) {

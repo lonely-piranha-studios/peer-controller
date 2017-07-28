@@ -1,7 +1,8 @@
 import ECS from 'yagl-ecs'
 import Peer from 'peerjs'
 
-import Container from './gfx/Container'
+import { Application, Graphics } from 'pixi.js'
+
 import Keyboard from './input/Keyboard'
 import GamePad from './input/GamePad'
 import System from './systems'
@@ -15,16 +16,21 @@ const CHARACTER_SIZE = { width: 16, height: 32 }
 class Game {
 
   constructor () {
-    this.container = new Container(window.innerWidth, window.innerHeight)
+    this.renderer = new Application({
+      width: window.innerWidth,
+      height: window.innerHeight,
+      backgroundColor: 0xFFFFFF,
+    })
+    this.renderer.Graphics = Graphics
 
     this.ecs = new ECS()
 
     this.systems = {
       keyboard: new System.KeyboardSystem(),
       gamePad: new System.GamePadSystem(),
-      map: new System.MapSystem(this.container),
+      map: new System.MapSystem(this.renderer),
       physic: new System.PhysicSystem(),
-      rendering: new System.RenderingSystem(this.container)
+      rendering: new System.RenderingSystem(this.renderer)
     }
 
     this.ecs.addSystem(this.systems.keyboard)
@@ -57,7 +63,7 @@ class Game {
       right: ['d', 'right'],
     })
     this.ecs.addEntity(entity)
-    this.container.app.ticker.add(() => this.tick())
+    this.renderer.ticker.add(() => this.tick())
   }
 
   openRoom (room) {
@@ -111,5 +117,5 @@ class Game {
 
 const game = new Game()
 
-document.body.appendChild(game.container.view)
+document.body.appendChild(game.renderer.view)
 

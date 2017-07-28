@@ -3,9 +3,9 @@ import { System } from 'yagl-ecs'
 
 export default class RenderingSystem extends System {
 
-  constructor (container) {
+  constructor (renderer) {
     super()
-    this.container = container
+    this.renderer = renderer
   }
 
   test (entity) {
@@ -14,11 +14,12 @@ export default class RenderingSystem extends System {
 
   enter (entity) {
     const { pos, display } = entity.components
+
     const { width, height, color } = display
     const w2 = width/2
     const h2 = height/2
 
-    const graphic = this.container.createGraphics()
+    const graphic = new this.renderer.Graphics()
 
     graphic.beginFill(parseInt(color.substr(1), 16))
     graphic.drawRect(-w2, -h2, width, height)
@@ -29,12 +30,12 @@ export default class RenderingSystem extends System {
       graphic: graphic
     })
 
-    this.container.addGraphics(graphic)
+    this.renderer.stage.addChild(graphic)
   }
 
   exit (entity) {
     const { display } = entity.components
-    this.container.removeGraphics(display.graphic)
+    this.renderer.stage.removeChild(display.graphic)
     display.graphic = undefined
   }
 
