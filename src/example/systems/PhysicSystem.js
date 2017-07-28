@@ -11,7 +11,7 @@ export default class PhysicSystem extends System {
     const { pos, physic } = entity.components
     const { vel, cor } = physic
 
-    if (!physic.onGround && false) {
+    if (!physic.onGround) {
       physic.vel.y = Math.min(12, physic.vel.y + 0.5)
     }
 
