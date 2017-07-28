@@ -1,7 +1,9 @@
 
 const Keyboard = {
   name: 'keyboard',
-  defaults: false,
+  getDefaults() {
+    return false
+  },
 }
 
 export default Keyboard

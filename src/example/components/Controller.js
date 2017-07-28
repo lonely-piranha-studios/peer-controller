@@ -1,7 +1,10 @@
 
+
 const Controller = {
   name: 'controller',
-  defaults: false,
+  getDefaults() {
+    return false
+  },
 }
 
 export default Controller

@@ -1,23 +1,39 @@
 import CircularBuffer from 'circular-buffer'
+import { INPUT } from '../../actions'
 
 
 export default class GamePad {
 
   constructor (conn) {
-    // Can max hold 100 input actions
-    this._actionBuffer = new CircularBuffer(100)
+    // Can max hold 20 input actions
+    this._actionBuffer = new CircularBuffer(20)
     this._state = {}
     this._conn = conn
+
+    this._conn.on('data', (action) => {
+      switch (action.type) {
+        case INPUT:
+          this._onInput(action.payload)
+          break;
+      }
+    })
+  }
+
+  _onInput (actions) {
+    if (Array.isArray(actions)) {
+      for (let action of actions) {
+        this._actionBuffer.enq(action)
+      }
+    }
   }
 
   send (action) {
-    conn.send(action)
+    this._conn.send(action)
   }
 
   getState () {
     const state = this._state
 
-    // Clear previous state
     for (let key in state) {
       if (state[key].type === 'button') {
         if (state[key].released) {
@@ -28,26 +44,23 @@ export default class GamePad {
       }
     }
 
-    // Aggregate all actions since last call
     while (this._actionBuffer.size()) {
-      const nextAction = this._actionBuffer.deq()
-      if (!nextAction) continue
-
-      const { type, value, name } = nextAction
+      const { type, value, name } = this._actionBuffer.deq() || {}
       const fname = String(name).toLowerCase()
-      const action = state[fname] = state[fname] || {}
+      console.log(fname)
 
-      switch (action.type = type) {
-        // case Controller.JOYSTICK
-        case 'joystick':
-          action.value = value
-          break
-        // case Controller.BUTTON
-        case 'button':
-          action.down = !!action.down || value
-          action.pressed = !!action.pressed || value
-          action.released = !!action.released || !value
-          break
+      if (fname) {
+        const action = state[fname] = state[fname] || {}
+        switch (action.type = type) {
+          case 'joystick':
+            action.value = value
+            break
+          case 'button':
+            action.down = !!action.down || value
+            action.pressed = !!action.pressed || value
+            action.released = !!action.released || !value
+            break
+        }
       }
     }
     return this
@@ -74,15 +87,6 @@ export default class GamePad {
   released (name) {
     const fname = String(name).toLowerCase()
     return (this._state[fname] && this._state[fname].released) || false
-  }
-
-  update (actions, id) {
-    console.log(id)
-    if (Array.isArray(actions)) {
-      for (let action of actions) {
-        this._actionBuffer.enq(action)
-      }
-    }
   }
 
 }

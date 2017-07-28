@@ -51,10 +51,10 @@ class Game {
       },
     })
     entity.components.keyboard = new Keyboard({
-      up: 'w',
-      down: 's',
-      left: 'a',
-      right: 'd',
+      up:    ['w', 'up'],
+      down:  ['s', 'down'],
+      left:  ['a', 'left'],
+      right: ['d', 'right'],
     })
     this.ecs.addEntity(entity)
   }
@@ -71,7 +71,6 @@ class Game {
     })
 
     peer.on('connection', (conn) => {
-      const gamePad = new GamePad(conn)
       const entity = new ECS.Entity(null, [
         Component.Controller,
         Component.Position,
@@ -83,10 +82,8 @@ class Game {
         pos: {
           x: 100, y: 100
         },
-        controller: {
-          id: this.systems.gamePad.addGamePad(gamePad),
-        },
       })
+      entity.components.controller = new GamePad(conn)
 
       conn.on('close', () => {
         this.ecs.removeEntity(entity)
@@ -98,10 +95,6 @@ class Game {
           case playerActions.CONNECT:
             console.log(`%c${playerActions.CONNECT}`, 'color:orange', entity.id, action.payload)
             this.ecs.addEntity(entity)
-            break;
-
-          case playerActions.INPUT:
-            gamePad.update(action.payload, entity.id)
             break;
         }
       })

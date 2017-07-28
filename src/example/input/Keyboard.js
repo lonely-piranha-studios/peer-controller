@@ -1,88 +1,101 @@
-const Keys = {
-  'enter': 19,
-  'space': 32,
+import CircularBuffer from 'circular-buffer'
+import keycode from 'keycode'
 
-  'left arrow':  37,
-  'up arrow':    38,
-  'right arrow': 39,
-  'down arrow':  40
-}
 
 export default class Keyboard {
 
-  constructor (keys) {
+  constructor (actions) {
+    // Can max hold 20 input actions
+    this._actionBuffer = new CircularBuffer(20)
+    this._state = {}
     this._bindings = {}
-    this._pressed  = []
-    this._down     = []
-    this._keyLen   = 256
 
-    if (keys != null) {
-      for (const action in keys) {
-        this.bindAction(action, keys[action])
-      }
-    }
-    for (let i = 0; i < this._keyLen; i++) {
-      this._pressed.push(false)
-      this._down.push(false)
+    if (actions) {
+      this.bindActions(actions)
     }
 
-    console.log(this._bindings)
-    
     document.addEventListener('keydown', this._onKeyDown.bind(this), false)
     document.addEventListener('keyup',   this._onKeyUp.bind(this),   false)
   }
 
-  bindAction (action, key) {
-    const c = this._getCode(key)
-
-    if (c == null || 0 > c || c > this._keyLen) {
-      throw new Error(`Bad attempted keybinding: ${action}, ${key}!`)
-    }
-
-    this._bindings[action] = c
-    this._pressed[c] = false
-    this._down[c] = false
-  }
-
-  getState () {
-    return this
-  }
-  
-  down (action) {
-    const c = this._bindings[action]
-    if (c == null) throw new Error(`Bad inputaction: ${action}!`)
-    return this._down[c]
-  }
-
-  pressed (action) {
-    const c = this._bindings[action]
-    if (c == null) throw new Error(`Bad inputaction: ${action}!`)
-
-    if (this._pressed[c] || !this._down[c]) {
-      return false
-    }
-    return this._pressed[c] = true
-  }
-
-  _getCode (c) {
-    if (typeof c === 'number') {
-      return c
-    } else if (c.length > 1) {
-      return Keys[c]
-    }
-    return c.toUpperCase().charCodeAt(0)
-  }
-
   _onKeyDown (evt) {
-    const c = evt.keyCode
-    if (c > this._keyLen) return
-    this._down[c] = true
+    this._actionBuffer.enq({
+      code: evt.keyCode,
+      value: true,
+    })
   }
 
   _onKeyUp (evt) {
-    const c = evt.keyCode
-    if (c > this._keyLen) return
-    this._pressed[c] = false
-    this._down[c] = false
+    this._actionBuffer.enq({
+      code: evt.keyCode,
+      value: false,
+    })
   }
+
+  getState () {
+    const state = this._state
+
+    for (let key in state) {
+      if (state[key].released) {
+        state[key].down = false
+      }
+      state[key].pressed = false
+      state[key].released = false
+    }
+
+    while (this._actionBuffer.size()) {
+      const { code, value } = this._actionBuffer.deq() || {}
+      const fname = this._bindings[code]
+
+      if (fname) {
+        const action = state[fname] = state[fname] || {}
+        action.down = !!action.down || value
+        action.pressed = !!action.pressed || value
+        action.released = !!action.released || !value
+      }
+    }
+
+    return this
+  }
+
+  bindAction (action, names) {
+    if (String(action) === '[object Object]' && !names) {
+      for (const key in action) {
+        this.bindAction(key, action[key])
+      }
+      return
+    }
+    const faction = String(action).toLowerCase()
+    const fnames = Array.isArray(names) ? names : [names]
+    for (let i = 0; i < fnames.length; i++) {
+      const name = fnames[i]
+      const keyCode = typeof name === 'number'
+        ? name
+        : keycode(name)
+      if (keyCode) {
+        this._bindings[keyCode] = faction
+      }
+    }
+  }
+
+  bindActions (actions) {
+    return this.bindAction(actions)
+  }
+
+  down (action) {
+    const faction = String(action).toLowerCase()
+    return (this._state[faction] && this._state[faction].down) || false
+  }
+
+  pressed (action) {
+    const faction = String(action).toLowerCase()
+    return (this._state[faction] && this._state[faction].pressed) || false
+  }
+
+  released (action) {
+    const faction = String(action).toLowerCase()
+    return (this._state[faction] && this._state[faction].released) || false
+  }
+
 }
+
