@@ -16,5 +16,8 @@ export default class Container {
   addGraphics (graphics) {
     this.app.stage.addChild(graphics)
   }
-  
+
+  removeGraphics (graphics) {
+    this.app.stage.removeChild(graphics)
+  }
 }

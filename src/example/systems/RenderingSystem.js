@@ -27,6 +27,13 @@ export default class RenderingSystem extends System {
     this.container.addGraphics(graphic)
   }
 
+  exit (entity) {
+    const { display } = entity.components
+    const { graphic } = display
+
+    this.container.removeGraphics(graphic)
+  }
+
   update (entity) {
     const { pos, display } = entity.components
 
