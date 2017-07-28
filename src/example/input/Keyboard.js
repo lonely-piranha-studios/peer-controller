@@ -63,19 +63,20 @@ export default class Keyboard {
       for (const key in action) {
         this.bindAction(key, action[key])
       }
-      return
-    }
-    const faction = String(action).toLowerCase()
-    const fnames = Array.isArray(names) ? names : [names]
-    for (let i = 0; i < fnames.length; i++) {
-      const name = fnames[i]
-      const keyCode = typeof name === 'number'
-        ? name
-        : keycode(name)
-      if (keyCode) {
-        this._bindings[keyCode] = faction
+    } else {
+      const faction = String(action).toLowerCase()
+      const fnames = Array.isArray(names) ? names : [names]
+      for (let i = 0; i < fnames.length; i++) {
+        const name = fnames[i]
+        const keyCode = typeof name === 'number'
+          ? name
+          : keycode(name)
+        if (keyCode) {
+          this._bindings[keyCode] = faction
+        }
       }
     }
+    return this
   }
 
   bindActions (actions) {
