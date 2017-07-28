@@ -1,0 +1,25 @@
+{
+  "name": "game-pad",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "dev": "webpack --config webpack.config.js --watch",
+    "start": "node ./server.js"
+  },
+  "devDependencies": {
+    "babel-core": "^6.25.0",
+    "babel-loader": "^7.1.1",
+    "babel-preset-latest": "^6.24.1",
+    "raw-loader": "^0.5.1",
+    "webpack": "^3.3.0"
+  },
+  "dependencies": {
+    "circular-buffer": "^1.0.2",
+    "express": "^4.15.3",
+    "fscreen": "^1.0.1",
+    "peer": "^0.2.8",
+    "peerjs": "^0.3.14",
+    "yagl-ecs": "^1.1.0"
+  }
+}
