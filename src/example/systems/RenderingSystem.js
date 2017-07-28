@@ -3,27 +3,35 @@ import { System } from 'yagl-ecs'
 
 export default class RenderingSystem extends System {
 
-  constructor (ctx) {
+  constructor (container) {
     super()
-    this.ctx = ctx
+    this.container = container
   }
 
   test (entity) {
     return ['pos', 'display'].every(comp => !!entity.components[comp])
   }
 
+  enter (entity) {
+    const { pos, display } = entity.components
+    const graphic = this.container.createGraphics()
+    graphic.beginFill(parseInt(display.color.substr(1), 16))
+    graphic.drawRect(-display.width / 2, -display.height / 2, display.width, display.height)
+    graphic.x = pos.x
+    graphic.y = pos.y
+
+    entity.updateComponent('display', {
+      graphic: graphic
+    })
+
+    this.container.addGraphics(graphic)
+  }
+
   update (entity) {
     const { pos, display } = entity.components
-    const { width: w, height: h, color: clr } = display
-    const w2 = w/2
-    const h2 = h/2
 
-    this.ctx.save()
-    this.ctx.fillStyle = clr
-    this.ctx.fillRect(pos.x - w2, pos.y - h2, w, h)
-    this.ctx.fillStyle = '#000'
-    this.ctx.fillRect(pos.x - 1, pos.y - 1, 3, 3)
-    this.ctx.restore()
+    display.graphic.x = pos.x
+    display.graphic.y = pos.y
   }
 
 }

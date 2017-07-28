@@ -1,7 +1,7 @@
 import ECS from 'yagl-ecs'
 import Peer from 'peerjs'
 
-import Canvas from './gfx/Canvas'
+import Container from './gfx/Container'
 import Keyboard from './input/Keyboard'
 import GamePad from './input/GamePad'
 import System from './systems'
@@ -15,16 +15,16 @@ const CHARACTER_SIZE = { width: 16, height: 32 }
 class Game {
 
   constructor () {
-    this.canvas = new Canvas(window.innerWidth, window.innerHeight)
+    this.container = new Container(window.innerWidth, window.innerHeight)
 
     this.ecs = new ECS()
 
     this.systems = {
       keyboard: new System.KeyboardSystem(),
       gamePad: new System.GamePadSystem(),
-      map: new System.MapSystem(this.canvas.getContext()),
+      map: new System.MapSystem(this.container),
       physic: new System.PhysicSystem(),
-      rendering: new System.RenderingSystem(this.canvas.getContext())
+      rendering: new System.RenderingSystem(this.container)
     }
 
     this.ecs.addSystem(this.systems.keyboard)
@@ -118,7 +118,6 @@ class Game {
   }
 
   tick () {
-    this.canvas.clear()
     this.ecs.update()
   }
 
@@ -127,5 +126,5 @@ class Game {
 const game = new Game()
 game.run()
 
-document.body.appendChild(game.canvas.view)
+document.body.appendChild(game.container.view)
 

@@ -3,9 +3,9 @@ import { System } from 'yagl-ecs'
 
 export default class MapSystem extends System {
 
-  constructor (ctx) {
+  constructor (container) {
     super()
-    this.ctx = ctx
+    this.container = container
   }
 
   test (entity) {
@@ -33,16 +33,17 @@ export default class MapSystem extends System {
       by: Math.floor((Math.max(pos.y, pred.y) + eh / 2) / th),
     }
 
-    this.ctx.save()
-    this.ctx.globalAlpha = 0.9
-    this.ctx.fillStyle = 'yellow'
-    this.ctx.fillRect(
-      area.tx * tw,
-      area.ty * th,
-      (area.bx - area.tx + 1) * tw,
-      (area.by - area.ty + 1) * th,
-    )
-    this.ctx.restore()
+    /* const highlight = this.container.createGraphics()
+
+     * highlight.beginFill(0xFFFF00, 0.9)
+     * highlight.drawRect(
+     *   area.tx * tw,
+     *   area.ty * th,
+     *   (area.bx - area.tx + 1) * tw,
+     *   (area.by - area.ty + 1) * th,
+     * );
+     * this.container.addGraphics(highlight)*/
+
     physic.onGround = false
 
     for (let x = area.tx; x <= area.bx; x++) {
@@ -51,7 +52,6 @@ export default class MapSystem extends System {
         const tx = x * tw + tw/2
         const ty = y * th + th/2
 
-        this.ctx.fillRect(tx-1, ty-1, 3, 3)
         if (this.collisionMap.solid(x, y)) {
 
           // distance on the axes
@@ -106,20 +106,18 @@ export default class MapSystem extends System {
         return this.data[x + y*this.width]
       },
     }
+
+    this.initGraphics()
   }
 
   update (entity) {
     this.checkCollision(entity)
   }
 
-  preUpdate () {
-    this.draw(this.ctx)
-  }
-
-  draw (ctx) {
+  initGraphics () {
     const { tileWidth: tw, tileHeight: th, width, height } = this
+    const t = this.container.createGraphics()
 
-    ctx.save()
     let x = 0, y = 0
 
     for (let x = 0; x < width; x++) {
@@ -130,24 +128,23 @@ export default class MapSystem extends System {
 
         switch (tile) {
           case '#':
-            ctx.fillStyle = '#000'
-            ctx.fillRect(tx, ty, tw, th)
+            t.beginFill(0x000000)
+            t.drawRect(tx, ty, tw, th);
+            this.container.addGraphics(t)
             break
           case 'v':
-            ctx.fillStyle = 'red'
-            ctx.fillRect(tx, ty + 4, tw, th - 4)
+            t.beginFill(0xFF0000)
+            t.drawRect(tx, ty + 4, tw, th - 4)
+            this.container.addGraphics(t)
             break
           case 'o':
-            ctx.fillStyle = 'orange'
-            ctx.beginPath()
-            ctx.arc(tx + tw / 2, ty + th / 2, tw * 0.3, 0, 2 * Math.PI)
-            ctx.fill()
+            t.beginFill(0xFFA500)
+            t.arc(tx + tw / 2, ty + th / 2, tw * 0.3, 0, 2 * Math.PI)
+            this.container.addGraphics(t)
             break;
         }
       }
     }
-
-    ctx.restore()
   }
 
 }
