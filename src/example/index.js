@@ -2,12 +2,15 @@ import ECS from 'yagl-ecs'
 import Peer from 'peerjs'
 
 import Canvas from './gfx/Canvas'
+import Keyboard from './input/Keyboard'
 import GamePad from './input/GamePad'
 import System from './systems'
 import Component from './components'
 
 import * as playerActions from '../actions'
 
+
+const CHARACTER_SIZE = { width: 16, height: 32 }
 
 class Game {
 
@@ -17,12 +20,14 @@ class Game {
     this.ecs = new ECS()
 
     this.systems = {
+      keyboard: new System.KeyboardSystem(),
       gamePad: new System.GamePadSystem(),
       map: new System.MapSystem(this.canvas.getContext()),
       physic: new System.PhysicSystem(),
       rendering: new System.RenderingSystem(this.canvas.getContext())
     }
 
+    this.ecs.addSystem(this.systems.keyboard)
     this.ecs.addSystem(this.systems.gamePad)
     this.ecs.addSystem(this.systems.map)
     this.ecs.addSystem(this.systems.physic)
@@ -31,6 +36,27 @@ class Game {
     this.systems.map.setMap(require('./maps/test_lvl.txt'))
 
     this.openRoom('game')
+
+
+    const entity = new ECS.Entity(null, [
+      Component.Keyboard,
+      Component.Position,
+      Component.Display,
+      Component.Physic,
+    ])
+    entity.updateComponents({
+      display: Object.assign({}, CHARACTER_SIZE),
+      pos: {
+        x: 100, y: 100,
+      },
+    })
+    entity.components.keyboard = new Keyboard({
+      up: 'w',
+      down: 's',
+      left: 'a',
+      right: 'd',
+    })
+    this.ecs.addEntity(entity)
   }
 
   openRoom (room) {
@@ -53,9 +79,7 @@ class Game {
         Component.Physic,
       ])
       entity.updateComponents({
-        display: {
-          width: 16, height: 32
-        },
+        display: Object.assign({}, CHARACTER_SIZE),
         pos: {
           x: 100, y: 100
         },
