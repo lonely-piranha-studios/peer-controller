@@ -6,6 +6,10 @@ export default class MapSystem extends System {
   constructor (container) {
     super()
     this.container = container
+    this.mapGraphic = this.container.createGraphics()
+    this.container.addGraphics(this.mapGraphic)
+    this.highlight = this.container.createGraphics()
+    this.container.addGraphics(this.highlight)
   }
 
   test (entity) {
@@ -33,16 +37,14 @@ export default class MapSystem extends System {
       by: Math.floor((Math.max(pos.y, pred.y) + eh / 2) / th),
     }
 
-    /* const highlight = this.container.createGraphics()
-
-     * highlight.beginFill(0xFFFF00, 0.9)
-     * highlight.drawRect(
-     *   area.tx * tw,
-     *   area.ty * th,
-     *   (area.bx - area.tx + 1) * tw,
-     *   (area.by - area.ty + 1) * th,
-     * );
-     * this.container.addGraphics(highlight)*/
+    this.highlight.clear()
+    this.highlight.beginFill(0xFFFF00, 0.9)
+    this.highlight.drawRect(
+      area.tx * tw,
+      area.ty * th,
+      (area.bx - area.tx + 1) * tw,
+      (area.by - area.ty + 1) * th,
+    );
 
     physic.onGround = false
 
@@ -116,7 +118,8 @@ export default class MapSystem extends System {
 
   initGraphics () {
     const { tileWidth: tw, tileHeight: th, width, height } = this
-    const t = this.container.createGraphics()
+    const t = this.mapGraphic
+    t.clear()
 
     let x = 0, y = 0
 
@@ -130,17 +133,14 @@ export default class MapSystem extends System {
           case '#':
             t.beginFill(0x000000)
             t.drawRect(tx, ty, tw, th);
-            this.container.addGraphics(t)
             break
           case 'v':
             t.beginFill(0xFF0000)
             t.drawRect(tx, ty + 4, tw, th - 4)
-            this.container.addGraphics(t)
             break
           case 'o':
             t.beginFill(0xFFA500)
             t.arc(tx + tw / 2, ty + th / 2, tw * 0.3, 0, 2 * Math.PI)
-            this.container.addGraphics(t)
             break;
         }
       }
