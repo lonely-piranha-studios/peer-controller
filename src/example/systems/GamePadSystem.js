@@ -3,16 +3,45 @@ import { System } from 'yagl-ecs'
 
 export default class GamePadSystem extends System {
 
+  constructor () {
+    super()
+
+    this.gamePads = []
+  }
+
+  addGamePad (gamePad) {
+    this.gamePads.push(gamePad)
+    const out = this.gamePads.length - 1
+    console.log(out)
+    return out
+  }
+
+  getGamePadState ({ id }) {
+    const gamePad = this.gamePads[id]
+    if (gamePad) {
+      return gamePad.getState()
+    }
+    return false
+  }
+
   test (entity) {
     return ['physic', 'controller'].every(comp => !!entity.components[comp])
   }
 
+  enter (entity) {
+    console.log(entity)
+  }
+
   update (entity) {
     const { physic, controller } = entity.components
-    const input = controller.getState()
+    const input = this.getGamePadState(controller)
     const speed = 3
 
-    if (input.pressed('a') && physic.collision.bottom) {
+    if (!input) {
+      return
+    }
+
+    if (input.pressed('a') && physic.onGround) {
       //physic.vel.y = -12
     }
     if (input.released('a')) {
@@ -32,8 +61,8 @@ export default class GamePadSystem extends System {
       console.log(entity.id, 'c is down!')
     }
 
-    physic.vel.x = input.axis('joystick').x * 3
-    physic.vel.y = input.axis('joystick').y * 3
+    physic.vel.x = input.axis('joystick').x * speed
+    physic.vel.y = input.axis('joystick').y * speed
   }
 
 }

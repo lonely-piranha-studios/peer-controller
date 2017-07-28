@@ -64,8 +64,7 @@
 /******/ })
 /************************************************************************/
 /******/ ([
-/* 0 */,
-/* 1 */
+/* 0 */
 /***/ (function(module, exports, __webpack_require__) {
 
 Object.defineProperty(exports, '__esModule', {
@@ -96,11 +95,11 @@ var _performance = __webpack_require__(22);
 
 var _performance2 = _interopRequireDefault(_performance);
 
-var _uid = __webpack_require__(9);
+var _uid = __webpack_require__(8);
 
 var _uid2 = _interopRequireDefault(_uid);
 
-var _utils = __webpack_require__(10);
+var _utils = __webpack_require__(9);
 
 /**
  * @class  ECS
@@ -378,9 +377,8 @@ exports['default'] = ECS;
 module.exports = exports['default'];
 
 /***/ }),
-/* 2 */,
-/* 3 */,
-/* 4 */
+/* 1 */,
+/* 2 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -410,11 +408,12 @@ const input = state => ({
 
 
 /***/ }),
+/* 3 */,
+/* 4 */,
 /* 5 */,
 /* 6 */,
 /* 7 */,
-/* 8 */,
-/* 9 */
+/* 8 */
 /***/ (function(module, exports) {
 
 Object.defineProperty(exports, "__esModule", {
@@ -577,7 +576,7 @@ exports["default"] = UID;
 module.exports = exports["default"];
 
 /***/ }),
-/* 10 */
+/* 9 */
 /***/ (function(module, exports) {
 
 Object.defineProperty(exports, "__esModule", {
@@ -611,6 +610,7 @@ function fastSplice(array, startIndex, removeCount) {
 }
 
 /***/ }),
+/* 10 */,
 /* 11 */,
 /* 12 */,
 /* 13 */,
@@ -633,13 +633,13 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_yagl_ecs__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_yagl_ecs__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_yagl_ecs___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_yagl_ecs__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__gfx_Canvas__ = __webpack_require__(24);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__input_GamePad__ = __webpack_require__(25);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__systems__ = __webpack_require__(27);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__components__ = __webpack_require__(32);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__actions__ = __webpack_require__(4);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__actions__ = __webpack_require__(2);
 
 
 
@@ -657,13 +657,19 @@ class Game {
 
     this.ecs = new __WEBPACK_IMPORTED_MODULE_0_yagl_ecs___default.a()
 
-    const mapSystem = new __WEBPACK_IMPORTED_MODULE_3__systems__["a" /* default */].MapSystem(this.canvas.getContext())
-    mapSystem.setMap(__webpack_require__(37))
+    this.systems = {
+      gamePad: new __WEBPACK_IMPORTED_MODULE_3__systems__["a" /* default */].GamePadSystem(),
+      map: new __WEBPACK_IMPORTED_MODULE_3__systems__["a" /* default */].MapSystem(this.canvas.getContext()),
+      physic: new __WEBPACK_IMPORTED_MODULE_3__systems__["a" /* default */].PhysicSystem(),
+      rendering: new __WEBPACK_IMPORTED_MODULE_3__systems__["a" /* default */].RenderingSystem(this.canvas.getContext())
+    }
 
-    this.ecs.addSystem(new __WEBPACK_IMPORTED_MODULE_3__systems__["a" /* default */].GamePadSystem())
-    this.ecs.addSystem(mapSystem)
-    this.ecs.addSystem(new __WEBPACK_IMPORTED_MODULE_3__systems__["a" /* default */].PhysicSystem())
-    this.ecs.addSystem(new __WEBPACK_IMPORTED_MODULE_3__systems__["a" /* default */].RenderingSystem(this.canvas.getContext()))
+    this.ecs.addSystem(this.systems.gamePad)
+    this.ecs.addSystem(this.systems.map)
+    this.ecs.addSystem(this.systems.physic)
+    this.ecs.addSystem(this.systems.rendering)
+
+    this.systems.map.setMap(__webpack_require__(37))
 
     this.openRoom('game')
   }
@@ -680,21 +686,24 @@ class Game {
     })
 
     peer.on('connection', (conn) => {
+      const gamePad = new __WEBPACK_IMPORTED_MODULE_2__input_GamePad__["a" /* default */](conn)
       const entity = new __WEBPACK_IMPORTED_MODULE_0_yagl_ecs___default.a.Entity(null, [
         __WEBPACK_IMPORTED_MODULE_4__components__["a" /* default */].Controller,
         __WEBPACK_IMPORTED_MODULE_4__components__["a" /* default */].Position,
         __WEBPACK_IMPORTED_MODULE_4__components__["a" /* default */].Display,
         __WEBPACK_IMPORTED_MODULE_4__components__["a" /* default */].Physic,
       ])
-      entity.updateComponent('display', {
-        width: 16,
-        height: 32,
+      entity.updateComponents({
+        display: {
+          width: 16, height: 32
+        },
+        pos: {
+          x: 100, y: 100
+        },
+        controller: {
+          id: this.systems.gamePad.addGamePad(gamePad),
+        },
       })
-      entity.updateComponent('pos', {
-        x: 100,
-        y: 100,
-      })
-      entity.components.controller = new __WEBPACK_IMPORTED_MODULE_2__input_GamePad__["a" /* default */](conn)
 
       conn.on('close', () => {
         this.ecs.removeEntity(entity)
@@ -704,12 +713,12 @@ class Game {
         switch (action.type) {
 
           case __WEBPACK_IMPORTED_MODULE_5__actions__["a" /* CONNECT */]:
-            console.log(`%c${__WEBPACK_IMPORTED_MODULE_5__actions__["a" /* CONNECT */]}`, 'color:orange', action.payload)
+            console.log(`%c${__WEBPACK_IMPORTED_MODULE_5__actions__["a" /* CONNECT */]}`, 'color:orange', entity.id, action.payload)
             this.ecs.addEntity(entity)
             break;
 
           case __WEBPACK_IMPORTED_MODULE_5__actions__["b" /* INPUT */]:
-            entity.components.controller.update(action.payload)
+            gamePad.update(action.payload, entity.id)
             break;
         }
       })
@@ -762,7 +771,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
  * @module  ecs
  */
 
-var _uid = __webpack_require__(9);
+var _uid = __webpack_require__(8);
 
 //import { fastSplice } from './utils';
 
@@ -1041,7 +1050,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
  * @module  ecs
  */
 
-var _utils = __webpack_require__(10);
+var _utils = __webpack_require__(9);
 
 // forced to disable this check for abstract methods
 // jshint unused:false
@@ -1358,13 +1367,13 @@ class GamePad {
         // case Controller.JOYSTICK
         case 'joystick':
           action.value = value
-          break;
+          break
         // case Controller.BUTTON
         case 'button':
           action.down = !!action.down || value
           action.pressed = !!action.pressed || value
           action.released = !!action.released || !value
-          break;
+          break
       }
     }
     return this
@@ -1393,7 +1402,8 @@ class GamePad {
     return (this._state[fname] && this._state[fname].released) || false
   }
 
-  update (actions) {
+  update (actions, id) {
+    console.log(id)
     if (Array.isArray(actions)) {
       for (let action of actions) {
         this._actionBuffer.enq(action)
@@ -1518,7 +1528,7 @@ module.exports=CircularBuffer;
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_yagl_ecs__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_yagl_ecs__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_yagl_ecs___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_yagl_ecs__);
 
 
@@ -1559,23 +1569,52 @@ class RenderingSystem extends __WEBPACK_IMPORTED_MODULE_0_yagl_ecs__["System"] {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_yagl_ecs__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_yagl_ecs__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_yagl_ecs___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_yagl_ecs__);
 
 
 
 class GamePadSystem extends __WEBPACK_IMPORTED_MODULE_0_yagl_ecs__["System"] {
 
+  constructor () {
+    super()
+
+    this.gamePads = []
+  }
+
+  addGamePad (gamePad) {
+    this.gamePads.push(gamePad)
+    const out = this.gamePads.length - 1
+    console.log(out)
+    return out
+  }
+
+  getGamePadState ({ id }) {
+    const gamePad = this.gamePads[id]
+    if (gamePad) {
+      return gamePad.getState()
+    }
+    return false
+  }
+
   test (entity) {
     return ['physic', 'controller'].every(comp => !!entity.components[comp])
   }
 
+  enter (entity) {
+    console.log(entity)
+  }
+
   update (entity) {
     const { physic, controller } = entity.components
-    const input = controller.getState()
+    const input = this.getGamePadState(controller)
     const speed = 3
 
-    if (input.pressed('a') && physic.collision.bottom) {
+    if (!input) {
+      return
+    }
+
+    if (input.pressed('a') && physic.onGround) {
       //physic.vel.y = -12
     }
     if (input.released('a')) {
@@ -1595,8 +1634,8 @@ class GamePadSystem extends __WEBPACK_IMPORTED_MODULE_0_yagl_ecs__["System"] {
       console.log(entity.id, 'c is down!')
     }
 
-    physic.vel.x = input.axis('joystick').x * 3
-    physic.vel.y = input.axis('joystick').y * 3
+    physic.vel.x = input.axis('joystick').x * speed
+    physic.vel.y = input.axis('joystick').y * speed
   }
 
 }
@@ -1610,7 +1649,7 @@ class GamePadSystem extends __WEBPACK_IMPORTED_MODULE_0_yagl_ecs__["System"] {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_yagl_ecs__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_yagl_ecs__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_yagl_ecs___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_yagl_ecs__);
 
 
@@ -1646,7 +1685,7 @@ class PhysicSystem extends __WEBPACK_IMPORTED_MODULE_0_yagl_ecs__["System"] {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_yagl_ecs__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_yagl_ecs__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_yagl_ecs___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_yagl_ecs__);
 
 
@@ -1707,23 +1746,24 @@ class MapSystem extends __WEBPACK_IMPORTED_MODULE_0_yagl_ecs__["System"] {
           // distance on the axes
           const dx = Math.abs(pos.x - tx) - (tw + ew)/2
           const dy = Math.abs(pos.y - ty) - (th + eh)/2
+
           const dist = Math.abs(dx) > Math.abs(dy) ? dx : dy
 
           const norm = {
             x: (dx >  dy) * (dx < 0 ? -1 : 1),
             y: (dx <= dy) * (dy < 0 ? -1 : 1),
           }
-          // Internal edge
+          // Skip internal edges
           if (this.collisionMap.solid(x + norm.x, y + norm.y)) {
             continue
           }
           const seperation = Math.max(dist, 0)
           const penetration = Math.min(dist, 0)
           const nv = (norm.x * vel.x + norm.y * vel.y) + seperation
-          if (nv < 0) {
-            //cor.x -= norm.x * penetration
-            //cor.y -= norm.y * penetration
+          cor.x -= norm.x * penetration * 0.2
+          cor.y -= norm.y * penetration * 0.2
 
+          if (nv < 0) {
             vel.x -= nv * norm.x
             vel.y -= nv * norm.y
 

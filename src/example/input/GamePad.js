@@ -41,13 +41,13 @@ export default class GamePad {
         // case Controller.JOYSTICK
         case 'joystick':
           action.value = value
-          break;
+          break
         // case Controller.BUTTON
         case 'button':
           action.down = !!action.down || value
           action.pressed = !!action.pressed || value
           action.released = !!action.released || !value
-          break;
+          break
       }
     }
     return this
@@ -76,7 +76,8 @@ export default class GamePad {
     return (this._state[fname] && this._state[fname].released) || false
   }
 
-  update (actions) {
+  update (actions, id) {
+    console.log(id)
     if (Array.isArray(actions)) {
       for (let action of actions) {
         this._actionBuffer.enq(action)

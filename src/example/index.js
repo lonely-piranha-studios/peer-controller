@@ -15,13 +15,19 @@ class Game {
 
     this.ecs = new ECS()
 
-    const mapSystem = new System.MapSystem(this.canvas.getContext())
-    mapSystem.setMap(require('./maps/test_lvl.txt'))
+    this.systems = {
+      gamePad: new System.GamePadSystem(),
+      map: new System.MapSystem(this.canvas.getContext()),
+      physic: new System.PhysicSystem(),
+      rendering: new System.RenderingSystem(this.canvas.getContext())
+    }
 
-    this.ecs.addSystem(new System.GamePadSystem())
-    this.ecs.addSystem(mapSystem)
-    this.ecs.addSystem(new System.PhysicSystem())
-    this.ecs.addSystem(new System.RenderingSystem(this.canvas.getContext()))
+    this.ecs.addSystem(this.systems.gamePad)
+    this.ecs.addSystem(this.systems.map)
+    this.ecs.addSystem(this.systems.physic)
+    this.ecs.addSystem(this.systems.rendering)
+
+    this.systems.map.setMap(require('./maps/test_lvl.txt'))
 
     this.openRoom('game')
   }
@@ -38,21 +44,24 @@ class Game {
     })
 
     peer.on('connection', (conn) => {
+      const gamePad = new GamePad(conn)
       const entity = new ECS.Entity(null, [
         Component.Controller,
         Component.Position,
         Component.Display,
         Component.Physic,
       ])
-      entity.updateComponent('display', {
-        width: 16,
-        height: 32,
+      entity.updateComponents({
+        display: {
+          width: 16, height: 32
+        },
+        pos: {
+          x: 100, y: 100
+        },
+        controller: {
+          id: this.systems.gamePad.addGamePad(gamePad),
+        },
       })
-      entity.updateComponent('pos', {
-        x: 100,
-        y: 100,
-      })
-      entity.components.controller = new GamePad(conn)
 
       conn.on('close', () => {
         this.ecs.removeEntity(entity)
@@ -62,12 +71,12 @@ class Game {
         switch (action.type) {
 
           case playerActions.CONNECT:
-            console.log(`%c${playerActions.CONNECT}`, 'color:orange', action.payload)
+            console.log(`%c${playerActions.CONNECT}`, 'color:orange', entity.id, action.payload)
             this.ecs.addEntity(entity)
             break;
 
           case playerActions.INPUT:
-            entity.components.controller.update(action.payload)
+            gamePad.update(action.payload, entity.id)
             break;
         }
       })

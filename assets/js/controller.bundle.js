@@ -60,22 +60,12 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 11);
+/******/ 	return __webpack_require__(__webpack_require__.s = 10);
 /******/ })
 /************************************************************************/
 /******/ ([
-/* 0 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Vec2__ = __webpack_require__(3);
-/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return __WEBPACK_IMPORTED_MODULE_0__Vec2__["a"]; });
-
-
-
-/***/ }),
-/* 1 */,
-/* 2 */
+/* 0 */,
+/* 1 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -141,68 +131,7 @@ Component._count = 0
 
 
 /***/ }),
-/* 3 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-
-
-class Vec2 {
-  constructor(x = 0, y = 0) {
-    this.set(x, y)
-  }
-  set (x, y) {
-    this.x = x
-    this.y = y
-    return this
-  }
-  get () {
-    return this
-  }
-  len2 () {
-    return this.x ** 2 + this.y ** 2
-  }
-  len () {
-    return Math.sqrt(this.len2())
-  }
-  norm () {
-    const l = this.len()
-    return this.scale(1 / l)
-  }
-  scale (c) {
-    this.x *= c
-    this.y *= c
-    return this
-  }
-  add (p) {
-    //assert(p instanceof Point, 'arg must be a point')
-    this.x += p.x
-    this.y += p.y
-    return this
-  }
-  sub (p) {
-    //assert(p instanceof Point, 'arg must be a point')
-    this.x -= p.x
-    this.y -= p.y
-    return this
-  }
-  dot (p) {
-    //assert(p instanceof Point, 'arg must be a point')
-    this.x *= p.x
-    this.y *= p.y
-    return this
-  }
-  clone () {
-    return new Vec2(this.x, this.y)
-  }
-}
-/* harmony export (immutable) */ __webpack_exports__["a"] = Vec2;
-
-
-
-
-/***/ }),
-/* 4 */
+/* 2 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -232,13 +161,13 @@ const input = state => ({
 
 
 /***/ }),
-/* 5 */
+/* 3 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Component__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Component__ = __webpack_require__(1);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return __WEBPACK_IMPORTED_MODULE_0__Component__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__JoyStick__ = __webpack_require__(12);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__JoyStick__ = __webpack_require__(11);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "c", function() { return __WEBPACK_IMPORTED_MODULE_1__JoyStick__["a"]; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__Button__ = __webpack_require__(14);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return __WEBPACK_IMPORTED_MODULE_2__Button__["a"]; });
@@ -248,20 +177,20 @@ const input = state => ({
 
 
 /***/ }),
-/* 6 */
+/* 4 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Value__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Value__ = __webpack_require__(5);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return __WEBPACK_IMPORTED_MODULE_0__Value__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__ValueXY__ = __webpack_require__(13);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__ValueXY__ = __webpack_require__(12);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return __WEBPACK_IMPORTED_MODULE_1__ValueXY__["a"]; });
 
 
 
 
 /***/ }),
-/* 7 */
+/* 5 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -296,11 +225,21 @@ class Value {
 
 
 /***/ }),
-/* 8 */
+/* 6 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__components__ = __webpack_require__(5);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Vec2__ = __webpack_require__(13);
+/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return __WEBPACK_IMPORTED_MODULE_0__Vec2__["a"]; });
+
+
+
+/***/ }),
+/* 7 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__components__ = __webpack_require__(3);
 
 
 
@@ -372,14 +311,14 @@ ControllerGroup.SPLIT_HORIZONTAL = 1 << 1
 
 
 /***/ }),
+/* 8 */,
 /* 9 */,
-/* 10 */,
-/* 11 */
+/* 10 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__components__ = __webpack_require__(5);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__components__ = __webpack_require__(3);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__controller__ = __webpack_require__(15);
 
 
@@ -407,13 +346,13 @@ document.body.appendChild(controller.getView())
 
 
 /***/ }),
-/* 12 */
+/* 11 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Component__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__values__ = __webpack_require__(6);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__utils_math__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Component__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__values__ = __webpack_require__(4);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__utils_math__ = __webpack_require__(6);
 
 
 
@@ -516,11 +455,11 @@ class JoyStick extends __WEBPACK_IMPORTED_MODULE_0__Component__["a" /* default *
 
 
 /***/ }),
-/* 13 */
+/* 12 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Value__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Value__ = __webpack_require__(5);
 
 
 
@@ -555,13 +494,74 @@ class ValueXY {
 
 
 /***/ }),
+/* 13 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+
+
+class Vec2 {
+  constructor(x = 0, y = 0) {
+    this.set(x, y)
+  }
+  set (x, y) {
+    this.x = x
+    this.y = y
+    return this
+  }
+  get () {
+    return this
+  }
+  len2 () {
+    return this.x ** 2 + this.y ** 2
+  }
+  len () {
+    return Math.sqrt(this.len2())
+  }
+  norm () {
+    const l = this.len()
+    return this.scale(1 / l)
+  }
+  scale (c) {
+    this.x *= c
+    this.y *= c
+    return this
+  }
+  add (p) {
+    //assert(p instanceof Point, 'arg must be a point')
+    this.x += p.x
+    this.y += p.y
+    return this
+  }
+  sub (p) {
+    //assert(p instanceof Point, 'arg must be a point')
+    this.x -= p.x
+    this.y -= p.y
+    return this
+  }
+  dot (p) {
+    //assert(p instanceof Point, 'arg must be a point')
+    this.x *= p.x
+    this.y *= p.y
+    return this
+  }
+  clone () {
+    return new Vec2(this.x, this.y)
+  }
+}
+/* harmony export (immutable) */ __webpack_exports__["a"] = Vec2;
+
+
+
+
+/***/ }),
 /* 14 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Component__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__values__ = __webpack_require__(6);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__utils_math__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Component__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__values__ = __webpack_require__(4);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__utils_math__ = __webpack_require__(6);
 
 
 
@@ -655,7 +655,7 @@ class Button extends __WEBPACK_IMPORTED_MODULE_0__Component__["a" /* default */]
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Controller__ = __webpack_require__(16);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__ControllerGroup__ = __webpack_require__(8);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__ControllerGroup__ = __webpack_require__(7);
 
 
 
@@ -671,10 +671,10 @@ __WEBPACK_IMPORTED_MODULE_0__Controller__["a" /* default */].Group = __WEBPACK_I
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__ControllerGroup__ = __webpack_require__(8);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__ControllerGroup__ = __webpack_require__(7);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_fscreen__ = __webpack_require__(17);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_fscreen___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_fscreen__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__actions__ = __webpack_require__(4);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__actions__ = __webpack_require__(2);
 
 
 

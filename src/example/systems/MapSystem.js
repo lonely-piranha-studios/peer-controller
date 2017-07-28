@@ -47,21 +47,22 @@ export default class MapSystem extends System {
 
     for (let x = area.tx; x <= area.bx; x++) {
       for (let y = area.ty; y <= area.by; y++) {
+        // center of tile
         const tx = x * tw + tw/2
         const ty = y * th + th/2
 
         this.ctx.fillRect(tx-1, ty-1, 3, 3)
         if (this.collisionMap.solid(x, y)) {
-          // center of tile
 
           // distance on the axes
           const dx = Math.abs(pos.x - tx) - (tw + ew)/2
           const dy = Math.abs(pos.y - ty) - (th + eh)/2
+
           const dist = Math.abs(dx) > Math.abs(dy) ? dx : dy
 
           const norm = {
-            x: (dx >  dy) * (dx < 0 ? -1 : 1),
-            y: (dx <= dy) * (dy < 0 ? -1 : 1),
+            x: (tx >  pos.x) * (dx < 0 ? -1 : 1),
+            y: (tx <= pos.x) * (dy < 0 ? -1 : 1),
           }
           // Skip internal edges
           if (this.collisionMap.solid(x + norm.x, y + norm.y)) {
@@ -71,8 +72,8 @@ export default class MapSystem extends System {
           const penetration = Math.min(dist, 0)
           const nv = (norm.x * vel.x + norm.y * vel.y) + seperation
           if (nv < 0) {
-            //cor.x -= norm.x * penetration
-            //cor.y -= norm.y * penetration
+            cor.x -= norm.x * penetration * 0.2
+            cor.y -= norm.y * penetration * 0.2
 
             vel.x -= nv * norm.x
             vel.y -= nv * norm.y
