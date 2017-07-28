@@ -14,9 +14,14 @@ export default class RenderingSystem extends System {
 
   enter (entity) {
     const { pos, display } = entity.components
+    const { width, height, color } = display
+    const w2 = width/2
+    const h2 = height/2
+
     const graphic = this.container.createGraphics()
-    graphic.beginFill(parseInt(display.color.substr(1), 16))
-    graphic.drawRect(-display.width / 2, -display.height / 2, display.width, display.height)
+
+    graphic.beginFill(parseInt(color.substr(1), 16))
+    graphic.drawRect(-w2, -h2, width, height)
     graphic.x = pos.x
     graphic.y = pos.y
 
@@ -29,9 +34,8 @@ export default class RenderingSystem extends System {
 
   exit (entity) {
     const { display } = entity.components
-    const { graphic } = display
-
-    this.container.removeGraphics(graphic)
+    this.container.removeGraphics(display.graphic)
+    display.graphic = undefined
   }
 
   update (entity) {
