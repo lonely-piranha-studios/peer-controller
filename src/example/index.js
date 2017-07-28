@@ -57,6 +57,7 @@ class Game {
       right: ['d', 'right'],
     })
     this.ecs.addEntity(entity)
+    this.container.app.ticker.add(() => this.tick())
   }
 
   openRoom (room) {
@@ -102,21 +103,6 @@ class Game {
 
   }
 
-  run () {
-    if (this.running) return
-    this.running = true
-
-    const loop = now => {
-      if (this.running) requestAnimationFrame(loop)
-      this.tick()
-    }
-    loop()
-  }
-
-  stop () {
-    this.running = false
-  }
-
   tick () {
     this.ecs.update()
   }
@@ -124,7 +110,6 @@ class Game {
 }
 
 const game = new Game()
-game.run()
 
 document.body.appendChild(game.container.view)
 
