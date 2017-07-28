@@ -1,4 +1,5 @@
 import ECS from 'yagl-ecs'
+import Peer from 'peerjs'
 
 import Canvas from './gfx/Canvas'
 import GamePad from './input/GamePad'
