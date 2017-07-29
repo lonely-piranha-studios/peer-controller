@@ -17,7 +17,7 @@ export default class MapSystem extends System {
     return ['pos', 'physic', 'display'].every(comp => !!entity.components[comp])
   }
 
-  checkCollision (entity) {
+  update (entity) {
     const { pos, physic, display } = entity.components
     const { vel, cor } = physic
     const { width, height } = display
@@ -26,11 +26,11 @@ export default class MapSystem extends System {
     const h2 = height / 2
     const aabb = [pos.x - w2, pos.y - h2, width, height]
 
-    const offset = this.mapCollider(aabb, [vel.x, vel.y], (moveAxis, moveDir, tileIdx, tileCoords) => {
-      if (moveAxis === 1 && tileIdx > 0) {
-        physic.onGround = moveDir === 0
+    const offset = this.mapCollider(aabb, [vel.x, vel.y], (moveAxis, moveDir, tileId, tileCoords) => {
+      if (moveAxis === 1 && tileId > 0) {
+        physic.onGround = moveDir === 1
       }
-      return tileIdx > 0
+      return tileId > 0
     })
 
     if (offset) {
@@ -55,10 +55,6 @@ export default class MapSystem extends System {
 
     this.mapCollider = collideAabbTilemap((x, y) => collisionMap[x + y*this.width], this.tileSize, [this.width, this.height])
     this.initGraphics()
-  }
-
-  update (entity) {
-    this.checkCollision(entity)
   }
 
   initGraphics () {
