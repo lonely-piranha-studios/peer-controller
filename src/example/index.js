@@ -10,6 +10,8 @@ import Component from './components'
 
 import * as playerActions from '../actions'
 
+import MenuScreen from './MenuScreen'
+
 
 const CHARACTER_SIZE = { width: 16, height: 32 }
 
@@ -121,5 +123,18 @@ class Game {
 
 const game = new Game()
 
-document.body.appendChild(game.renderer.view)
+
+
+let button = document.createElement('button');
+let body = document.body
+body.onclick = () => {
+  body.innerHTML = ""
+  body.appendChild(game.renderer.view)
+  body.onclick = null;
+}
+button.innerHTML = "Start Game"
+
+const menu = new MenuScreen
+body.appendChild(menu.renderer.view)
+//document.body.appendChild(game.renderer.view)
 

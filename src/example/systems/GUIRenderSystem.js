@@ -46,8 +46,6 @@ export default class GUIRenderSystem extends System {
 			moneyLabel
 		})
 
-		console.log(moneyLabel);
-
 		this.renderer.stage.addChild(backgroundGraphic)
 		this.renderer.stage.addChild(foregroundGraphic)
 		this.renderer.stage.addChild(moneyLabel)
