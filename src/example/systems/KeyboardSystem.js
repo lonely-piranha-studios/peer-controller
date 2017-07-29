@@ -11,12 +11,13 @@ export default class KeyboardSystem extends System {
     const { physic, keyboard } = entity.components
     const input = keyboard.getState()
     const speed = 3
+    const jump = 12
 
     if (input.pressed('up') && physic.onGround) {
-      physic.vel.y = -12
+      physic.vel.y = -jump
     }
-    if (input.released('up') && physic.vel.y < -6) {
-      physic.vel.y = -6
+    if (input.released('up') && physic.vel.y < -jump/2) {
+      physic.vel.y = -jump/2
     }
 
     physic.vel.x = speed * (input.down('right') - input.down('left'))
