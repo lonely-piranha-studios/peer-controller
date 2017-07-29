@@ -31,7 +31,7 @@ class Game {
       map: new System.MapSystem(this.renderer),
       physic: new System.PhysicSystem(),
       rendering: new System.RenderingSystem(this.renderer),
-      gui: new System.GUIRenderSystem(this.renderer)
+      gui: new System.GUIRenderSystem(this.renderer),
     }
 
     this.ecs.addSystem(this.systems.keyboard)
@@ -52,6 +52,7 @@ class Game {
       Component.Display,
       Component.Physic,
       Component.Bar,
+      Component.Money
     ])
     entity.updateComponents({
       display: Object.assign({}, CHARACTER_SIZE),

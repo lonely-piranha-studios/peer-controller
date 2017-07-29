@@ -4,7 +4,7 @@ import Keyboard from './Keyboard'
 import Position from './Position'
 import Physic from './Physic'
 import Bar from './Bar'
-
+import Money from './Money'
 
 export default {
   Display,
@@ -13,4 +13,5 @@ export default {
   Position,
   Physic,
   Bar,
+  Money,
 }

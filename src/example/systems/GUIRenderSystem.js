@@ -12,11 +12,10 @@ export default class GUIRenderSystem extends System {
 	}
 
 	test (entity) {
-		return entity.components.bar
+		return !!entity.components.bar && !!entity.components.money	
 	}
 
 	enter (entity) {
-
 		const backgroundGraphic = new this.renderer.Graphics()
 
 		const { maxValue, currentValue } = entity.components.bar
@@ -32,13 +31,26 @@ export default class GUIRenderSystem extends System {
 		foregroundGraphic.lineStyle(4, this.borderColor)
 		foregroundGraphic.drawRoundedRect(this.x,this.y,maxValue,this.height,8)
 
+		const text = new this.renderer.Graphics()
+
+		let moneyLabel = new PIXI.Text(`€${entity.components.money.amount}`, new PIXI.TextStyle({ fontFamily: 'Arial' }))
+		moneyLabel.x = 20
+		moneyLabel.y = 40
+
 		entity.updateComponent('bar', {
 			backgroundGraphic: backgroundGraphic,
 			foregroundGraphic: foregroundGraphic
 		})
 
+		entity.updateComponent('money', {
+			moneyLabel
+		})
+
+		console.log(moneyLabel);
+
 		this.renderer.stage.addChild(backgroundGraphic)
 		this.renderer.stage.addChild(foregroundGraphic)
+		this.renderer.stage.addChild(moneyLabel)
 	}
 
 	update (entity) {
@@ -53,6 +65,10 @@ export default class GUIRenderSystem extends System {
 		backgroundGraphic.beginFill(0xffffff,0.9)
 		backgroundGraphic.drawRect(this.x+currentValue,this.y,maxValue-currentValue,this.height)
 		backgroundGraphic.endFill()
+
+		let { moneyLabel } = entity.components.money
+
+		moneyLabel.text = `€${entity.components.money.amount}`
 
 	}
 }
