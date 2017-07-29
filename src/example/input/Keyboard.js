@@ -49,8 +49,8 @@ export default class Keyboard {
 
       if (fname) {
         const action = state[fname] = state[fname] || {}
+        action.pressed = !!action.pressed || (!action.down && value)
         action.down = !!action.down || value
-        action.pressed = !!action.pressed || value
         action.released = !!action.released || !value
       }
     }

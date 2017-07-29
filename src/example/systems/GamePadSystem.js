@@ -12,8 +12,11 @@ export default class GamePadSystem extends System {
     const input = controller.getState()
     const speed = 3
 
-    if (input.pressed('a')) {
-      console.log(entity.id, 'a is pressed!')
+    if (input.pressed('a') && physic.onGround) {
+      physic.vel.y = -12
+    }
+    if (input.released('a') && physic.vel.y < -6) {
+      physic.vel.y = -6
     }
     if (input.released('b')) {
       console.log(entity.id, 'b is released!')
@@ -23,7 +26,7 @@ export default class GamePadSystem extends System {
     }
 
     physic.vel.x = input.axis('joystick').x * speed
-    physic.vel.y = input.axis('joystick').y * speed
+    //physic.vel.y = input.axis('joystick').y * speed
   }
 
 }
