@@ -3,6 +3,7 @@ import KeyboardSystem from './KeyboardSystem'
 import GamePadSystem from './GamePadSystem'
 import PhysicSystem from './PhysicSystem'
 import MapSystem from './MapSystem'
+import GUIRenderSystem from './GUIRenderSystem'
 
 
 export default {
@@ -11,4 +12,5 @@ export default {
   GamePadSystem,
   PhysicSystem,
   MapSystem,
+  GUIRenderSystem,
 }

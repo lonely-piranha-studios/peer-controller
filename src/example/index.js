@@ -30,7 +30,8 @@ class Game {
       gamePad: new System.GamePadSystem(),
       map: new System.MapSystem(this.renderer),
       physic: new System.PhysicSystem(),
-      rendering: new System.RenderingSystem(this.renderer)
+      rendering: new System.RenderingSystem(this.renderer),
+      gui: new System.GUIRenderSystem(this.renderer)
     }
 
     this.ecs.addSystem(this.systems.keyboard)
@@ -38,6 +39,7 @@ class Game {
     this.ecs.addSystem(this.systems.map)
     this.ecs.addSystem(this.systems.physic)
     this.ecs.addSystem(this.systems.rendering)
+    this.ecs.addSystem(this.systems.gui)
 
     this.systems.map.setMap(require('./maps/test_lvl.txt'))
 
@@ -49,6 +51,7 @@ class Game {
       Component.Position,
       Component.Display,
       Component.Physic,
+      Component.Bar,
     ])
     entity.updateComponents({
       display: Object.assign({}, CHARACTER_SIZE),
